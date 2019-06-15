@@ -1,11 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Accelerometer } from 'expo';
 
 
 export default class AccelerometerSensor extends React.Component {
   state = {
     accelerometerData: { x: 0, y: 0, z: 0 },
+    urlService: 'http://192.168.100.4:3000/1'
   };
   _subscription: any;
 
@@ -31,14 +32,14 @@ export default class AccelerometerSensor extends React.Component {
 
   _fast = () => {
     Accelerometer.setUpdateInterval(
-      16
+      30
     );
   };
 
   _subscribe = () => {
     this._subscription = Accelerometer.addListener(
       accelerometerData => {
-        fetch('http://192.168.100.4:3000/1', {
+        fetch(this.state.urlService, {
           method: 'POST',
           // headers: {
           //   Accept: 'application/json',
@@ -80,7 +81,13 @@ export default class AccelerometerSensor extends React.Component {
             <Text>Fast</Text>
           </TouchableOpacity>
         </View>
+        <TextInput
+          style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+          onChangeText={(text) => this.state.urlService = text}
+          value={this.state.urlService}
+        />
       </View>
+
     );
   }
 }

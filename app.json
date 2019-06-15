@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "You look amazing!",
-    "slug": "myProject",
+    "name": "AccelerometerSender",
+    "slug": "accel",
     "privacy": "public",
     "sdkVersion": "33.0.0",
     "platforms": [
@@ -25,6 +25,7 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": ""
   }
 }
