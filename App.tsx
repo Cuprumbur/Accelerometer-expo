@@ -4,9 +4,12 @@ import { Accelerometer } from 'expo';
 
 
 export default class AccelerometerSensor extends React.Component {
+
+  _websocket = new WebSocket('');
+  sender = 'mobile';
   state = {
     accelerometerData: { x: 0, y: 0, z: 0 },
-    urlService: 'http://192.168.100.4:3000/1'
+    urlService: `ws://localhost:8000/?name=${this.sender}&room=great`
   };
   _subscription: any;
 
@@ -35,18 +38,11 @@ export default class AccelerometerSensor extends React.Component {
       30
     );
   };
-
   _subscribe = () => {
+
     this._subscription = Accelerometer.addListener(
       accelerometerData => {
-        fetch(this.state.urlService, {
-          method: 'POST',
-          // headers: {
-          //   Accept: 'application/json',
-          //   'Content-Type': 'application/json',
-          // },
-          body: JSON.stringify(accelerometerData),
-        });
+        this._websocket.send(JSON.stringify({ sender: this.sender, data: accelerometerData }));
         this.setState({ accelerometerData });
       })
   }
