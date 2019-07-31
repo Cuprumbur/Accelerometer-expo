@@ -2,14 +2,15 @@ import React from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Accelerometer } from 'expo';
 
-
+const sender = 'mobile';
+const url = `ws://greatservice.azurewebsites.net/?name=${sender}&room=great`;
 export default class AccelerometerSensor extends React.Component {
 
-  _websocket = new WebSocket('');
-  sender = 'mobile';
+
+
   state = {
     accelerometerData: { x: 0, y: 0, z: 0 },
-    urlService: `ws://localhost:8000/?name=${this.sender}&room=great`
+    urlService: url
   };
   _subscription: any;
 
@@ -38,11 +39,29 @@ export default class AccelerometerSensor extends React.Component {
       30
     );
   };
+  _websocket;
   _subscribe = () => {
-
+    this._websocket = new WebSocket(url);
     this._subscription = Accelerometer.addListener(
       accelerometerData => {
-        this._websocket.send(JSON.stringify({ sender: this.sender, data: accelerometerData }));
+        let data;
+        try {
+          data = JSON.stringify({
+            x: accelerometerData.x,
+            y: accelerometerData.y,
+            z: accelerometerData.z
+          }
+          )
+        } catch (err) {
+          console.log('stringify error');
+          console.log(err);
+        }
+        try {
+          this._websocket.send(data);
+        } catch (err) {
+          console.log('send error');
+          console.log(err);
+        }
         this.setState({ accelerometerData });
       })
   }
@@ -68,7 +87,7 @@ export default class AccelerometerSensor extends React.Component {
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={this._toggle} style={styles.button}>
-            <Text>Toggl e</Text>
+            <Text>Toggle 5</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._slow} style={[styles.button, styles.middleButton]}>
             <Text>Slow</Text>
